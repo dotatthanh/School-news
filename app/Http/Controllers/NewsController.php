@@ -6,10 +6,12 @@ use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Models\Category;
 use App\Models\News;
+use App\Models\SubCategory;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
@@ -42,10 +44,12 @@ class NewsController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = [];
+        $subCategories = [];
 
         $data = [
             'categories' => $categories,
+            'subCategories' => $subCategories,
         ];
 
         return view('news.create', $data);
@@ -70,9 +74,11 @@ class NewsController extends Controller
 
             News::create([
                 'title' => $request->title,
+                // 'slug' => Str::of($request->title)->slug('-'),
                 'image' => $file_path_image,
                 'parent_category_id' => $request->parent_category_id,
                 'category_id' => $request->category_id,
+                'sub_category_id' => $request->sub_category_id,
                 'content' => $request->content,
                 'summary' => $request->summary,
             ]);
@@ -104,8 +110,13 @@ class NewsController extends Controller
      */
     public function edit(News $news)
     {
+        $categories = Category::where('parent_category_id', $news->parent_category_id)->get();
+        $subCategories = SubCategory::where('category_id', $news->category_id)->get();
+
         $data = [
             'data_edit' => $news,
+            'categories' => $categories,
+            'subCategories' => $subCategories,
         ];
 
         return view('news.edit', $data);
@@ -124,8 +135,10 @@ class NewsController extends Controller
 
             $data = [
                 'title' => $request->title,
+                // 'slug' => Str::of($request->title)->slug('-'),
                 'parent_category_id' => $request->parent_category_id,
                 'category_id' => $request->category_id,
+                'sub_category_id' => $request->sub_category_id,
                 'content' => $request->content,
                 'summary' => $request->summary,
             ];

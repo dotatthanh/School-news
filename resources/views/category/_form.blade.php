@@ -27,9 +27,23 @@
             {!! $errors->first('parent_category_id', '<span class="error">:message</span>') !!}
         </div>
     </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="image">Image @if($routeType == 'create') <span class="error">*</span>@endif</label>
+            <input id="image" name="image" type="file" class="form-control">
+            {!! $errors->first('image', '<span class="error">:message</span>') !!}
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Description</label>
+        <textarea id="elm2" class="mb-2" name="description">{{ isset($data_edit->description) ? $data_edit->description : '' }}</textarea>
+        {!! $errors->first('description', '<span class="error">:message</span>') !!}
+    </div>
 </div>
 
 <div class="mt-3">
     <button type="submit" class="btn btn-primary mr-1 waves-effect waves-light">Save</button>
-    <a href="{{ route('news.index') }}" class="btn btn-secondary waves-effect">Back</a>
+    <a href="{{ route('sub-categories.index') }}" class="btn btn-secondary waves-effect">Back</a>
 </div>

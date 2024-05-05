@@ -29,7 +29,8 @@ class UpdateNewsRequest extends FormRequest
             'summary' => 'required',
             'parent_category_id' => 'required',
             'category_id' => 'required',
-            'image' => 'image',
+            'sub_category_id' => 'required',
+            'image' => 'nullable|image',
         ];
     }
 
@@ -37,7 +38,12 @@ class UpdateNewsRequest extends FormRequest
     {
         return [
             'parent_category_id' => 'parent category',
-            'category_id' => 'sub category',
+            'category_id' => 'category',
+            'sub_category_id' => 'sub category',
+            'title' => 'title',
+            'content' => 'content',
+            'summary' => 'summary',
+            'image' => 'image',
         ];
     }
 }

@@ -15,7 +15,14 @@
                         <span>Category</span>
                     </a>
                 </li>
-                
+
+                <li>
+                    <a href="{{ route('sub-categories.index') }}" class=" waves-effect">
+                        <i class="bx bx-news"></i>
+                        <span>Sub Category</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="{{ route('news.index') }}" class=" waves-effect">
                         <i class="bx bx-news"></i>

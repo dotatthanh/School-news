@@ -30,6 +30,8 @@ class StoreCategoryRequest extends FormRequest
                 Rule::unique('categories')->ignore($this->category),
             ],
             'parent_category_id' => 'required',
+            'image' => 'nullable|image',
+            'description' => 'nullable|max:1000',
         ];
     }
 
@@ -38,6 +40,8 @@ class StoreCategoryRequest extends FormRequest
         return [
             'parent_category_id' => 'parent category',
             'name' => 'category name',
+            'image' => 'image',
+            'description' => 'description',
         ];
     }
 }

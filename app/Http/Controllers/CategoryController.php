@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -61,10 +64,19 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
+            if ($request->file('image')) {
+                $name = time().'_'.$request->image->getClientOriginalName();
+                $file_path_image = 'uploads/category/'.$name;
+                Storage::disk('public_uploads')->putFileAs('category', $request->image, $name);
+            }
+
             $category = Category::create([
                 'code' => '',
+                'image' => $file_path_image,
                 'name' => $request->name,
+                // 'slug' => Str::of($request->name)->slug('-'),
                 'parent_category_id' => $request->parent_category_id,
+                'description' => $request->description,
             ]);
 
             $category->update([
@@ -111,15 +123,26 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(StoreCategoryRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         try {
             DB::beginTransaction();
 
-            $category->update([
+            $data = [
                 'name' => $request->name,
+                // 'slug' => Str::of($request->name)->slug('-'),
                 'parent_category_id' => $request->parent_category_id,
-            ]);
+                'description' => $request->description,
+            ];
+
+            if ($request->file('image')) {
+                $name = time().'_'.$request->image->getClientOriginalName();
+                $file_path_image = 'uploads/category/'.$name;
+                Storage::disk('public_uploads')->putFileAs('category', $request->image, $name);
+                $data['image'] = $file_path_image;
+            }
+
+            $category->update($data);
 
             DB::commit();
 

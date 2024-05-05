@@ -53,9 +53,10 @@
                                     <th>Title</th>
                                     <th>Image</th>
                                     <th>Parent category</th>
+                                    <th>Category</th>
                                     <th>Sub category</th>
-                                    <th>Summary</th>
-                                    <th>Content</th>
+                                    {{-- <th>Summary</th> --}}
+                                    {{-- <th>Content</th> --}}
                                     <th class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -70,7 +71,8 @@
                                         </td>
                                         <td>{{ getConst('PARENT_CATEGORY')[$item->parent_category_id] }}</td>
                                         <td>{{ $item->category->name }}</td>
-                                        <td>
+                                        <td>{{ $item->subCategory->name }}</td>
+                                        {{-- <td>
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                 data-bs-target="#summary{{ $item->id }}">View</button>
 
@@ -121,7 +123,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> --}}
                                         <td class="text-center">
                                             <ul class="list-inline font-size-20 contact-links mb-0">
                                                 <li class="list-inline-item px">

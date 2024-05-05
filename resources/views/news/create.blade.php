@@ -22,7 +22,7 @@
 
                     <form method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data">
 
-                        @include('news._form')
+                        @include('news._form', ['routeType' => 'create'])
 
                     </form>
                 </div>
@@ -46,7 +46,7 @@
     <script src="{{ asset('assets\js\pages\ecommerce-select2.init.js') }}"></script>
 
     <script type="text/javascript">
-        function getSubCategory() {
+        function getCategory() {
             var parentCategoryId = $(`select[name="parent_category_id"]`).val();
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
             if (parentCategoryId) {
@@ -72,6 +72,7 @@
                                 $(`select[name="category_id"]`).prop('disabled', true);
                                 $('select[name="category_id"]').append('<option value="">There are no categories</option>');
                             }
+                            $(`select[name="sub_category_id"]`).prop('disabled', true);
                             $('select[name="category_id"]').select2();
                         }
                     },
@@ -85,9 +86,44 @@
             }
         }
 
-        $(document).ready(function() {
-            getSubCategory();
-        })
+        function getSubCategory() {
+            var categoryId = $(`select[name="category_id"]`).val();
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+            if (categoryId) {
+                // gọi api
+                $.ajax({
+                    url: "/admin/sub-categories/get-sub-categories",
+                    type: "POST",
+                    data: {
+                        category_id: categoryId,
+                        _token: csrfToken,
+                    },
+                    success: function (respon) {
+                        if (respon.data) {
+                            $('select[name="sub_category_id"]').empty();
+                            if (respon.data.length > 0) {
+                                $(`select[name="sub_category_id"]`).prop('disabled', false);
+                                $('select[name="sub_category_id"]').append('<option value="">Select category</option>');
+                                $.each(respon.data, function(index, item) {
+                                    $('select[name="sub_category_id"]').append('<option value="' + item.id + '">' + item.name + '</option>');
+                                });
+                            }
+                            else {
+                                $(`select[name="sub_category_id"]`).prop('disabled', true);
+                                $('select[name="sub_category_id"]').append('<option value="">There are no categories</option>');
+                            }
+                            $('select[name="sub_category_id"]').select2();
+                        }
+                    },
+                    errors: function () {
+                        alert('Error server!!!');
+                    }
+                });
+            }
+            else {
+                $(`select[name="category_id"]`).prop('disabled', true);
+            }
+        }
     </script>
 @endsection
 

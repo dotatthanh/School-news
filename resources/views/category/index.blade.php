@@ -30,7 +30,7 @@
                             </div>
 
                             <div class="col-sm-3">
-                                <select class="form-control select2" name="type">
+                                <select class="form-control select2" name="parent_category_id">
                                     <option value="">Select parent category</option>
                                     @foreach (getConst('PARENT_CATEGORY') as $id => $parentCategoryName)
                                         <option value="{{ $id }}"
@@ -60,8 +60,8 @@
                                 <tr>
                                     <th style="width: 70px;" class="text-center">STT</th>
                                     <th>Code</th>
-                                    <th>Category Name</th>
                                     <th>Parent category</th>
+                                    <th>Category Name</th>
                                     <th class="text-center">Hành động</th>
                                 </tr>
                             </thead>
@@ -71,8 +71,8 @@
                                     <tr>
                                         <td class="text-center">{{ $stt++ }}</td>
                                         <td>{{ $item->code }}</td>
-                                        <td>{{ $item->name }}</td>
                                         <td>{{ getConst('PARENT_CATEGORY')[$item->parent_category_id] }}</td>
+                                        <td>{{ $item->name }}</td>
                                         <td class="text-center">
                                             <ul class="list-inline font-size-20 contact-links mb-0">
                                                 <li class="list-inline-item px">

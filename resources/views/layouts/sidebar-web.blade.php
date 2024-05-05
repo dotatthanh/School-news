@@ -85,19 +85,6 @@
                         <div class="menu_topright">
                             <ul>
                                 <li>
-                                    <a href="https://tuyendung.hust.edu.vn/#" title="Recruit">Recruit</a>
-                                </li>
-                                <li>
-                                    <a href="https://www.hust.edu.vn/vi/du-an-sahep-1/du-an-nang-cao-chat-luong-giao-duc-dai-hoc-sahep/du-an-nang-cao-chat-luong-giao-duc-dai-hoc-sahep-1.html"
-                                        title="SAHEP Project">SAHEP Project</a>
-                                </li>
-                                <li>
-                                    <a href="https://mail.hust.edu.vn/" title="Email">Email</a>
-                                </li>
-                                <li>
-                                    <a href="vi/lich-lam-viec/Truong-dai-hoc-BKHN/" title="Calendar">Calendar</a>
-                                </li>
-                                <li>
                                     <a href="en/contact/" title="Contact">Contact</a>
                                 </li>
                             </ul>
@@ -121,7 +108,7 @@
                 <ul class="menu-mobile">
                     <li>
                         <div>
-                            <a title="About HUST" href="en/about/">About HUST</a>
+                            <a title="About HUST" href="{{ route('web.about') }}">About HUST</a>
                             <i class="fa fa-angle-down custom-fa" aria-hidden="true"></i>
                         </div>
                         <ul>
@@ -949,111 +936,24 @@
                                             </span></a>
                                     </li>
                                     <li>
-                                        <a title="About HUST" href="en/about/">About HUST</a>
+                                        <a title="About HUST" href="{{ route('web.about') }}">About HUST</a>
                                         <ul>
+                                            @foreach (getCategories(getConst('PARENT_CATEGORY1.About')) as $itemCategory)
                                             <li>
-                                                <a title="Welcome to HUST" href="en/about/welcome-to-hust-550560.html">Welcome
-                                                    to HUST</a>
-                                            </li>
-                                            <li>
-                                                <a title="Mission-Vision-Core Values"
-                                                    href="en/about/mission-vision-core-values-550573.html">Mission-Vision-Core
-                                                    Values</a>
-                                            </li>
-                                            <li>
-                                                <a title="Organization" href="en/organization/">Organization</a>
+                                                <a title="{{ $itemCategory->name }}" href="{{ route('web.about-category', $itemCategory->id) }}">{{ $itemCategory->name }}</a>
                                                 <ul>
+                                                    @foreach (getSubCategories($itemCategory->id) as $itemSubCategory)
                                                     <li>
-                                                        <a title="Organizational Structure"
-                                                            href="en/organization/organizational-structure-550597.html">Organizational
-                                                            Structure</a>
+                                                        <a title="{{ $itemSubCategory->name }}"
+                                                            href="en/organization/organizational-structure-550597.html">{{ $itemSubCategory->name }}</a>
                                                     </li>
-                                                    <li>
-                                                        <a title="Board of Presidency"
-                                                            href="en/organization/board-of-presidency-550610.html">Board
-                                                            of Presidency</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="University Council"
-                                                            href="en/organization/university-council-550623.html">University
-                                                            Council</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="Science and Academic Council"
-                                                            href="en/organization/science-and-academic-council-551516.html">Science
-                                                            and Academic Council</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="Schools and Faculties"
-                                                            href="en/organization/schools-and-faculties-551527.html">Schools
-                                                            and Faculties</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="Research Centers And Institutes"
-                                                            href="en/organization/research-centers-and-institutes-551549.html">Research
-                                                            Centers And Institutes</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="Administrative Offices"
-                                                            href="en/organization/administrative-offices-551538.html">Administrative
-                                                            Offices</a>
-                                                    </li>
-
+                                                    @endforeach
                                                 </ul>
                                             </li>
-                                            <li>
-                                                <a title="Milestones" href="en/about/milestones-550649.html">Milestones</a>
-                                            </li>
-                                            <li>
-                                                <a title="Quick Facts" href="en/about/quick-facts-550662.html">Quick
-                                                    Facts</a>
-                                            </li>
-                                            <li>
-                                                <a title="University Quality Assuarance"
-                                                    href="en/about/university-accreditation-558678.html">University
-                                                    Quality Assuarance</a>
-                                                <ul>
-                                                    <li>
-                                                        <a title="Internal Quality Assurance"
-                                                            href="about/quality-assuarance-550727.html">Internal
-                                                            Quality Assurance</a>
-                                                    </li>
-                                                    <li>
-                                                        <a title="External Quality Assurance"
-                                                            href="about/external-quality-assurance.html">External
-                                                            Quality Assurance</a>
-                                                        <ul>
-                                                            <li>
-                                                                <a title="Institutional Accreditation"
-                                                                    href="">Institutional Accreditation</a>
-                                                            </li>
-                                                            <li>
-                                                                <a title="Program Accreditation" href="">Program
-                                                                    Accreditation</a>
-                                                            </li>
-
-                                                        </ul>
-                                                    </li>
-
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a title="University Rankings"
-                                                    href="en/about/university-rankings-550714.html">University
-                                                    Rankings</a>
-                                            </li>
-                                            <li>
-                                                <a title="University’s Reports"
-                                                    href="en/about/university-s-reports.html">University’s Reports</a>
-                                            </li>
-                                            <li>
-                                                <a title="Sustainability"
-                                                    href="https://www.hust.edu.vn/en/about/sustainability.html">Sustainability</a>
-                                            </li>
-
+                                            @endforeach
                                         </ul>
                                     </li>
-                                    <li>
+                                    {{-- <li>
                                         <a title="Academics" href="en/academics/">Academics</a>
                                         <ul>
                                             <li>
@@ -1519,7 +1419,7 @@
                                     </li>
                                     <li>
                                         <a title="eHUST" href="https://e.hust.edu.vn/">eHUST</a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                             </div>
                         </div>

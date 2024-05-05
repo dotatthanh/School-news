@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Category;
+use App\Models\SubCategory;
+
 if (! function_exists('formatDate')) {
     function formatDate($date, $format = 'Y-m-d H:i:s')
     {
@@ -24,53 +27,25 @@ if (! function_exists('getConst')) {
     }
 }
 
-if (! function_exists('getStatusBookingRoom')) {
-    function getStatusBookingRoom($status)
+if (! function_exists('getCategories')) {
+    function getCategories($parentCategoryId)
     {
-        switch ($status) {
-            case getConst('booking-room.status.pending'):
-                return '<span class="text-warning">Đang chờ duyệt</span>';
-                break;
-            case getConst('booking-room.status.approve'):
-                return '<span class="text-success">Đã duyệt</span>';
-                break;
-            case getConst('booking-room.status.expire'):
-                return '<span class="text-warning">Đã được sử dụng</span>';
-                break;
-            case getConst('booking-room.status.reject'):
-                return '<span class="text-danger">Hủy</span>';
-                break;
-        }
-
-        return false;
+        return Category::with('subCategories')->where('parent_category_id', $parentCategoryId)->get();
     }
 }
 
-if (! function_exists('getNameStatusBookingRoom')) {
-    function getNameStatusBookingRoom($status)
+if (! function_exists('getSubCategories')) {
+    function getSubCategories($categoryId)
     {
-        switch ($status) {
-            case getConst('booking-room.status.pending'):
-                return 'Đang chờ duyệt';
-                break;
-            case getConst('booking-room.status.approve'):
-                return 'Đã duyệt';
-                break;
-            case getConst('booking-room.status.expire'):
-                return 'Đã được sử dụng';
-                break;
-            case getConst('booking-room.status.reject'):
-                return 'Hủy';
-                break;
-        }
-
-        return false;
+        return SubCategory::where('category_id', $categoryId)->get();
     }
 }
 
-// if (!function_exists('LogError')) {
-//     function LogError($exception = '')
-//     {
-//         Illuminate\Support\Facades\Log::error($exception);
-//     }
-// }
+if (! function_exists('isCurrentPage')) {
+    function isCurrentPage($segment)
+    {
+        if (request()->segment(1) === $segment)
+            return "class=current";
+        return '';
+    }
+}

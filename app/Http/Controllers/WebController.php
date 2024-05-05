@@ -4,32 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
-use App\Models\Customer;
 use App\Models\News;
-use App\Models\Product;
-use App\Models\Info;
 use App\Models\Contact;
 use App\Http\Requests\StoreContactRequest;
-use App\Http\Requests\Auth\LoginRequest;
-use Auth;
-use App\Http\Requests\StoreCustomerRequest;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\ChangePasswordRequest;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\PostProductRequest;
-use App\Mail\ResetPasswordCustomer;
+use App\Models\SubCategory;
+use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class WebController extends Controller
 {
     public function index()
     {
-    	$latest_news = News::limit(4)->latest()->get();
+    	$categoryResearchs = Category::where('parent_category_id', getConst('PARENT_CATEGORY1.Research'))->get();
+        $newPost = News::where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->orderBy('id', 'desc')->first();
+        $slidePost = News::where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->offset(1)->limit(6)->orderBy('id', 'desc')->get();
+        $nonPost = News::where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->offset(7)->limit(5)->orderBy('id', 'desc')->get();
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categoryResearchs' => $categoryResearchs,
+    		'newPost' => $newPost,
+    		'slidePost' => $slidePost,
+    		'nonPost' => $nonPost,
     	];
 
     	return view('web.index', $data);
@@ -37,337 +32,253 @@ class WebController extends Controller
 
     public function news()
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $data = News::where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->get();
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'data' => $data,
     	];
 
     	return view('web.news', $data);
     }
-    
-    public function research()
+
+    public function newsCategory(Category $category)
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->get();
+        $data = News::where('category_id', $category->id)->paginate(10);
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categories' => $categories,
+    		'data' => $data,
+    	];
+
+    	return view('web.news-category', $data);
+    }
+
+    public function newsSubCategory(Category $category, SubCategory $sub_category)
+    {
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->get();
+    	$data = News::where('sub_category_id', $sub_category->id)->paginate(10);
+
+    	$data = [
+    		'categories' => $categories,
+    		'data' => $data,
+    	];
+
+    	return view('web.news-category', $data);
+    }
+
+    public function research()
+    {
+        $categoryResearchs = Category::where('parent_category_id', getConst('PARENT_CATEGORY1.Research'))->get();
+
+    	$data = [
+    		'categoryResearchs' => $categoryResearchs,
     	];
 
     	return view('web.research', $data);
     }
 
-    public function abount()
+    public function researchCategory(Category $category)
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Research'))->get();
+        $data = News::where('category_id', $category->id)->paginate(10);
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categories' => $categories,
+    		'data' => $data,
     	];
 
-    	return view('web.abount', $data);
+    	return view('web.research-category', $data);
     }
-    
-    public function academics()
+
+    public function researchSubCategory(Category $category, SubCategory $sub_category)
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Research'))->get();
+    	$data = News::where('sub_category_id', $sub_category->id)->paginate(10);
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categories' => $categories,
+    		'data' => $data,
+    	];
+
+    	return view('web.research-category', $data);
+    }
+
+    public function about()
+    {
+        $categoryAbounts = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.About'))->get();
+
+    	$data = [
+    		'categoryAbounts' => $categoryAbounts,
+    	];
+
+    	return view('web.about', $data);
+    }
+
+    public function aboutCategory(Category $category)
+    {
+        $categoryAbounts = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.About'))->get();
+
+    	$data = [
+    		'categoryAbounts' => $categoryAbounts,
+    		'data' => $category,
+    	];
+
+    	return view('web.about-category', $data);
+    }
+
+    public function aboutSubCategory(Category $category, SubCategory $sub_category)
+    {
+        $categoryAbounts = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.About'))->get();
+
+    	$data = [
+    		'categoryAbounts' => $categoryAbounts,
+    		'data' => $sub_category,
+    	];
+
+    	return view('web.about-category', $data);
+    }
+
+    public function academics()
+    {
+        $categoryAcademics = Category::where('parent_category_id', getConst('PARENT_CATEGORY1.Academic'))->get();
+
+    	$data = [
+    		'categoryAcademics' => $categoryAcademics,
     	];
 
     	return view('web.academics', $data);
     }
-    
-    public function contact()
+
+    public function academicsCategory(Category $category)
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Academic'))->get();
+        $data = News::where('category_id', $category->id)->paginate(10);
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categories' => $categories,
+    		'data' => $data,
     	];
 
-    	return view('web.contact', $data);
+    	return view('web.academics-category', $data);
     }
 
-    public function studentAffairs()
+    public function academicsSubCategory(Category $category, SubCategory $sub_category)
     {
-    	$latest_news = News::limit(4)->latest()->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Academic'))->get();
+    	$data = News::where('sub_category_id', $sub_category->id)->paginate(10);
 
     	$data = [
-    		'latest_news' => $latest_news,
+    		'categories' => $categories,
+    		'data' => $data,
     	];
 
-    	return view('web.student_affairs', $data);
+    	return view('web.academics-category', $data);
     }
 
-    public function search(Request $request)
+    public function alumni()
     {
-        $products = Product::paginate(8);
-
-        if ($request->search) {
-            $products = Product::where('name', 'like', '%'.$request->search.'%')->paginate(8);
-            $products->appends(['search' => $request->search]);
-        }
-
-        $data = [
-            'products' => $products
-        ];
-
-        return view('web.search', $data);
-    }
-
-    public function categoryProduct($id)
-    {
-    	$category = Category::findOrFail($id);
-    	$products = $category->products()->where('status', 1)->paginate(9);
+    	$categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Alumni'))->get();
+    	$data = News::where('parent_category_id', getConst('PARENT_CATEGORY1.Alumni'))->paginate(10);
 
     	$data = [
-    		'category' => $category,
-    		'products' => $products,
+    		'categories' => $categories,
+    		'data' => $data,
     	];
 
-    	return view('web.category-product', $data);
+    	return view('web.alumni', $data);
     }
 
-    public function categoryNews($id)
+    public function alumniCategory(Category $category)
     {
-    	$category = Category::findOrFail($id);
-    	$posts = News::where('category_id', $id)->orderBy('created_at', 'desc')->paginate(9);
-    	$random_news = News::inRandomOrder()->limit(5)->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Alumni'))->get();
+        $data = News::where('category_id', $category->id)->paginate(10);
 
     	$data = [
-    		'category' => $category,
-    		'posts' => $posts,
-    		'random_news' => $random_news,
+    		'categories' => $categories,
+    		'data' => $data,
     	];
 
-    	return view('web.category-news', $data);
+    	return view('web.alumni', $data);
     }
 
-    public function newsDetail($id)
+    public function alumniSubCategory(Category $category, SubCategory $sub_category)
     {
-    	$news = News::findOrFail($id);
-    	$random_news = News::inRandomOrder()->limit(5)->get();
-    	$orther_news = News::inRandomOrder()->limit(3)->get();
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Alumni'))->get();
+    	$data = News::where('sub_category_id', $sub_category->id)->paginate(10);
 
     	$data = [
-    		'news' => $news,
-    		'random_news' => $random_news,
-    		'orther_news' => $orther_news,
+    		'categories' => $categories,
+    		'data' => $data,
+    	];
+
+    	return view('web.alumni', $data);
+    }
+
+    public function newsDetail(Category $category, SubCategory $sub_category, News $news) {
+    	$categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.News'))->get();
+
+    	$data = [
+    		'categories' => $categories,
+    		'data' => $news,
     	];
 
     	return view('web.news-detail', $data);
     }
 
-    // public function contact()
-    // {
-    // 	$info = Info::findOrFail(1);
+    public function researchDetail(Category $category, SubCategory $sub_category, News $news) {
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Research'))->get();
 
-    // 	$data = [
-    // 		'info' => $info,
-    // 	];
+    	$data = [
+    		'categories' => $categories,
+    		'data' => $news,
+    	];
 
-    // 	return view('web.contact', $data);
+    	return view('web.research-detail', $data);
+    }
+
+    // public function aboutDetail(Category $category, SubCategory $sub_category, News $news) {
+
     // }
+
+    public function academicsDetail(Category $category, SubCategory $sub_category, News $news) {
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Academic'))->get();
+
+    	$data = [
+    		'categories' => $categories,
+    		'data' => $news,
+    	];
+
+    	return view('web.academics-detail', $data);
+    }
+
+    public function alumniDetail(Category $category, SubCategory $sub_category, News $news) {
+        $categories = Category::with('subCategories')->where('parent_category_id', getConst('PARENT_CATEGORY1.Alumni'))->get();
+
+    	$data = [
+    		'categories' => $categories,
+    		'data' => $news,
+    	];
+
+    	return view('web.alumni-detail', $data);
+    }
+
+    public function contact()
+    {
+    	return view('web.contact');
+    }
 
     public function postContact(StoreContactRequest $request)
     {
     	try {
             DB::beginTransaction();
-
-            Contact::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'content' => $request->content,
-                'phone_number' => $request->phone_number,
-            ]);
+            Contact::create($request->all());
 
             DB::commit();
-            return redirect()->back()->with('alert-error','Gửi phản hồi thành công!');
-        } catch (Exception $e) {
+            return redirect()->back()->with('alert-success','Send feedback success!');
+        } catch (Exception) {
             DB::rollback();
-            return redirect()->back()->with('alert-error','Gửi phản hồi thất bại!');
-        }
-    }
-
-    public function productDetail($id)
-    {
-    	$product = Product::findOrFail($id);
-
-    	$data = [
-    		'product' => $product,
-    	];
-
-    	return view('web.product-detail', $data);
-    }
-
-    public function login()
-    {
-    	return view('web.login');
-    }
-
-    public function postLogin(LoginRequest $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::guard('web')->attempt($credentials)) {
-            // $request->session()->regenerate();
-
-            // return redirect()->intended('/');
-            return redirect()->route('web.index')->with('alert-success','Đăng nhập thành công!');
-        }
-
-        return back()->withErrors([
-            'email' => 'Email hoặc mật khẩu không đúng!',
-        ]);
-    }
-
-    public function logout() {
-        auth()->guard('web')->logout();
-        return redirect()->intended('/');
-    }
-
-    public function register()
-    {
-    	return view('web.register');
-    }
-
-    public function postRegister(StoreCustomerRequest $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            $file_path = '';
-            if ($request->file('avatar')) {
-                $name = time().'_'.$request->avatar->getClientOriginalName();
-                $file_path = 'uploads/avatar/customer/'.$name;
-                Storage::disk('public_uploads')->putFileAs('avatar/customer', $request->avatar, $name);
-            }
-
-            $customer = Customer::create([
-                'code' => '',
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'gender' => $request->gender,
-                'birthday' => date("Y-m-d", strtotime($request->birthday)),
-                'phone_number' => $request->phone_number,
-                'address' => $request->address,
-                'avatar' => $file_path,
-            ]);
-
-            $customer->update([
-                'code' => 'KH'.str_pad($customer->id, 6, '0', STR_PAD_LEFT)
-            ]);
-
-            DB::commit();
-            return redirect()->route('web.login')->with('alert-success','Đăng ký thành công!');
-        } catch (Exception $e) {
-            DB::rollback();
-            return redirect()->back()->with('alert-error','Đăng ký thất bại!');
-        }
-    }
-
-    public function profile()
-    {
-        return view('web.profile');
-    }
-
-    public function viewChangePassword()
-    {
-        return view('web.change-password');
-    }
-
-    public function changePassword(ChangePasswordRequest $request)
-    {
-
-        try {
-            DB::beginTransaction();
-            $customer = auth()->guard('web')->user();
-
-            if (Hash::check($request->password_old, $customer->password)) {
-                $customer->update([
-                    'password' => Hash::make($request->password),
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('web.index')->with('alert-success','Đổi mật khẩu thành công!');
-        } catch (Exception $e) {
-            DB::rollback();
-            return redirect()->back()->with('alert-error','Đổi mật khẩu thất bại!');
-        }
-    }
-
-    public function viewPostProduct()
-    {
-        return view('web.post-product');
-    }
-
-    public function postProduct(PostProductRequest $request)
-    {
-        try {
-            DB::beginTransaction();
-
-            if ($request->file('image')) {
-                $name = time().'_'.$request->image->getClientOriginalName();
-                $file_path_image = 'uploads/product/'.$name;
-                Storage::disk('public_uploads')->putFileAs('product', $request->image, $name);
-            }
-
-            if ($request->file('file')) {
-                $name = time().'_'.$request->file->getClientOriginalName();
-                $file_path_file = 'uploads/product/'.$name;
-                Storage::disk('public_uploads')->putFileAs('product', $request->file, $name);
-            }
-
-            $product = Product::create([
-                'code' => '',
-                'name' => $request->name,
-                'image' => $file_path_image,
-                'file' => $file_path_file,
-                'category_id' => $request->category_id,
-                'description' => $request->description,
-                'customer_id' => auth()->guard('web')->user()->id,
-            ]);
-
-            $product->update([
-                'code' => 'SP'.str_pad($product->id, 6, '0', STR_PAD_LEFT)
-            ]);
-
-            DB::commit();
-            return redirect()->route('web.index')->with('alert-success','Đăng sản phẩm thành công! Sản phẩm của bạn đang chờ xét duyệt!');
-        } catch (Exception $e) {
-            DB::rollback();
-            return redirect()->back()->with('alert-error','Đăng sản phẩm thất bại!');
-        }
-    }
-
-    public function viewForgotPassword()
-    {
-        return view('web.forgot-password');
-    }
-
-    public function forgotPassword(Request $request)
-    {
-        $user = Customer::where('email', $request->email)->first();
-
-        if ($user) {
-            $password = Str::random(8);
-            $user->update([
-                'password' => bcrypt($password)
-            ]);
-
-            Mail::to($user->email)->send(new ResetPasswordCustomer($user, $password));
-
-            return redirect()->back()->with('alert-success','Mật khẩu mới đã được gửi tới địa chỉ Email của bạn! Vui lòng kiểm tra để lấy mật khẩu mới.');
-        }
-        else {
-            return redirect()->back()->with('alert-error','Không tìm thấy tài khoản trong hệ thống!');
+            return redirect()->back()->with('alert-error','Send feedback fail!');
         }
     }
 }

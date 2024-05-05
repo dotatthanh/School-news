@@ -16,11 +16,11 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label for="parent-category-id">Parent category <span class="text-danger">*</span></label>
-            <select class="form-control select2" name="parent_category_id"  id="parent-category-id" onchange="getSubCategory()">
+            <select class="form-control select2" name="parent_category_id"  id="parent-category-id" onchange="getCategory()">
                 <option value="">Select parent category</option>
                 @foreach (getConst('PARENT_CATEGORY') as $id => $parentCategoryName)
                     <option value="{{ $id }}"
-                        {{ isset($data_edit['type']) && $data_edit['type'] == $id ? 'selected' : '' }}>
+                        {{ old('parent_category_id', $data_edit->parent_category_id ?? '') == $id ? 'selected' : '' }}>
                         {{ $parentCategoryName }}</option>
                 @endforeach
             </select>
@@ -30,14 +30,14 @@
 
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="category-id">Sub category <span class="text-danger">*</span></label>
-            <select class="form-control select2" name="category_id" id="category-id">
-                <option value="">Select sub category</option>
-                {{-- @foreach ($categories as $category)
+            <label for="category-id">Category <span class="text-danger">*</span></label>
+            <select class="form-control select2" name="category_id" id="category-id" onchange="getSubCategory()">
+                <option value="">Select category</option>
+                @foreach ($categories as $category)
                     <option value="{{ $category->id }}"
-                        {{ isset($data_edit->category_id) && $data_edit->category_id == $category->id ? 'selected' : '' }}>
+                        {{ old('category_id', $data_edit->category_id ?? '') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}</option>
-                @endforeach --}}
+                @endforeach
             </select>
             {!! $errors->first('category_id', '<span class="error">:message</span>') !!}
         </div>
@@ -47,9 +47,23 @@
 <div class="row mb-3">
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="image">Image</label>
+            <label for="image">Image @if($routeType == 'create') <span class="error">*</span>@endif</label>
             <input id="image" name="image" type="file" class="form-control">
             {!! $errors->first('image', '<span class="error">:message</span>') !!}
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="sub-category-id">Sub category <span class="text-danger">*</span></label>
+            <select class="form-control select2" name="sub_category_id" id="sub-category-id">
+                <option value="">Select sub category</option>
+                @foreach ($subCategories as $category)
+                    <option value="{{ $category->id }}"
+                        {{ old('sub_category_id', $data_edit->sub_category_id ?? '') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}</option>
+                @endforeach
+            </select>
+            {!! $errors->first('sub_category_id', '<span class="error">:message</span>') !!}
         </div>
     </div>
 </div>

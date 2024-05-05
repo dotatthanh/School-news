@@ -163,7 +163,7 @@
                         <div class="right-top">
                             <div class="menu_topright">
                                 <ul>
-                                    <li>
+                                    {{-- <li>
                                         <a href="https://tuyendung.hust.edu.vn/#" title="Recruit">Recruit</a>
                                     </li>
                                     <li>
@@ -175,7 +175,7 @@
                                     </li>
                                     <li>
                                         <a href="vi/lich-lam-viec/Truong-dai-hoc-BKHN/" title="Calendar">Calendar</a>
-                                    </li>
+                                    </li> --}}
                                     <li>
                                         <a href="en/contact/" title="Contact">Contact</a>
                                     </li>

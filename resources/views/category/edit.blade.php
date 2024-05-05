@@ -22,7 +22,7 @@
 
                     <form method="POST" action="{{ route('categories.update', $data_edit->id) }}" enctype="multipart/form-data">
                         @method('PUT')
-                        @include('category._form')
+                        @include('category._form', ['routeType' => 'update'])
 
                     </form>
                 </div>
@@ -34,6 +34,11 @@
 @endsection
 
 @section('script')
+    <!--tinymce js-->
+    <script src="{{ asset('assets/libs/tinymce/tinymce.min.js') }}"></script>
+
+    <!-- init js -->
+    <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
     <!-- select 2 plugin -->
     <script src="{{ asset('assets\libs\select2\select2.min.js') }}"></script>
 
